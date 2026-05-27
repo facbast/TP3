@@ -1,12 +1,12 @@
-export default class LabyrinthScene extends Phaser.Scene {
+export default class LabyrinthScene2 extends Phaser.Scene {
   constructor() {
-    super("labyrinth");
+    super("labyrinth2");
   }
 
-  init() {
+  init(data) {
+    this.accumulatedScore = data?.accumulatedScore || 0;
     this.collectedItems = 0;
-    this.maxItems = 8;
-    this.accumulatedScore = 0; // score from previous levels (none for level 1)
+    this.maxItems = 10;
   }
 
   preload() {
@@ -62,10 +62,16 @@ export default class LabyrinthScene extends Phaser.Scene {
       fontStyle: "bold",
     });
 
-    this.scoreText = this.add.text(10, 35, `Puntaje: ${this.accumulatedScore}`, {
+    this.scoreText = this.add.text(10, 35, `Puntaje Acumulado: ${this.accumulatedScore}`, {
       fontSize: "14px",
       fill: "#00ffff",
     });
+
+    this.levelText = this.add.text(400, 10, "NIVEL 2", {
+      fontSize: "20px",
+      fill: "#ff00ff",
+      fontStyle: "bold",
+    }).setOrigin(0.5, 0);
 
     this.goalText = this.add.text(10, 60, `Llega a la META (verde)`, {
       fontSize: "14px",
@@ -101,15 +107,6 @@ export default class LabyrinthScene extends Phaser.Scene {
       g.clear();
     }
 
-    // floor texture (light gray)
-    if (!this.textures.exists("floor-tex")) {
-      const g = this.make.graphics({ x: 0, y: 0, add: false });
-      g.fillStyle(0xcccccc, 1);
-      g.fillRect(0, 0, 32, 32);
-      g.generateTexture("floor-tex", 32, 32);
-      g.clear();
-    }
-
     // player texture (blue)
     if (!this.textures.exists("player-tex")) {
       const g = this.make.graphics({ x: 0, y: 0, add: false });
@@ -139,32 +136,32 @@ export default class LabyrinthScene extends Phaser.Scene {
   }
 
   createLabyrinthTilemap() {
-    // simple maze layout (0=floor, 1=wall)
-    // 25x19 grid
+    // different maze layout (0=floor, 1=wall)
+    // 25x19 grid - more complex than level 1
     const maze = [
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1],
-      [1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1],
-      [1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1],
-      [1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1],
-      [1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1],
-      [1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1],
-      [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1],
-      [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1],
-      [1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
+      [1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
+      [1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1],
+      [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1],
+      [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1],
+      [1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
+      [1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1],
+      [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+      [1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
       [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
       [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     ];
 
-    this.goalX = 23;
-    this.goalY = 15;
+    this.goalX = 22;
+    this.goalY = 10;
 
     this.walls = this.physics.add.staticGroup();
 
@@ -181,16 +178,18 @@ export default class LabyrinthScene extends Phaser.Scene {
   }
 
   spawnItems() {
-    // place items at specific locations (not on walls)
+    // more items in level 2 (10 total)
     const itemPositions = [
       { x: 2, y: 2 },
-      { x: 5, y: 3 },
-      { x: 8, y: 6 },
-      { x: 12, y: 8 },
-      { x: 16, y: 10 },
-      { x: 20, y: 7 },
-      { x: 22, y: 12 },
-      { x: 10, y: 15 },
+      { x: 6, y: 2 },
+      { x: 10, y: 3 },
+      { x: 14, y: 4 },
+      { x: 18, y: 2 },
+      { x: 22, y: 3 },
+      { x: 8, y: 8 },
+      { x: 12, y: 10 },
+      { x: 16, y: 13 },
+      { x: 20, y: 15 },
     ];
 
     itemPositions.forEach((pos) => {
@@ -205,20 +204,19 @@ export default class LabyrinthScene extends Phaser.Scene {
       item.setData("collected", true);
       item.destroy();
       this.collectedItems += 1;
-      this.accumulatedScore += 10;
+      this.accumulatedScore += 10; // each item in level 2 is worth 10 points
       this.countText.setText(`Items: ${this.collectedItems}/${this.maxItems}`);
-      this.scoreText.setText(`Puntaje: ${this.accumulatedScore}`);
+      this.scoreText.setText(`Puntaje Acumulado: ${this.accumulatedScore}`);
     }
   }
 
   checkGoal(player, goal) {
     if (this.collectedItems >= 5) {
-      // pass to next level
-      this.scene.start("labyrinth2", { accumulatedScore: this.accumulatedScore });
+      // win level 2 - go to final victory scene
+      this.scene.start("labyrinth-win", { totalScore: this.accumulatedScore });
     } else {
       // not enough items
       this.goalText.setText(`Necesitas ${5 - this.collectedItems} items más!`);
     }
   }
 }
-
