@@ -212,8 +212,8 @@ export default class LabyrinthScene2 extends Phaser.Scene {
 
   checkGoal(player, goal) {
     if (this.collectedItems >= 5) {
-      // win level 2 - go to final victory scene
-      this.scene.start("labyrinth-win", { totalScore: this.accumulatedScore });
+      // unlock level 3
+      this.scene.start("labyrinth3", { accumulatedScore: this.accumulatedScore });
     } else {
       // not enough items
       this.goalText.setText(`Necesitas ${5 - this.collectedItems} items más!`);
