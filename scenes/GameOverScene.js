@@ -63,14 +63,27 @@ export default class GameOverScene extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
+    // back to menu instruction
+    this.add
+      .text(400, 520, "O presiona M para volver al menú", {
+        fontSize: "16px",
+        fill: "#aaaaaa",
+      })
+      .setOrigin(0.5);
+
     // restart on space key
     this.input.keyboard.on("keydown-SPACE", () => {
       this.scene.start("hello-world");
     });
 
+    // back to menu on M key
+    this.input.keyboard.on("keydown-M", () => {
+      this.scene.start("menu");
+    });
+
     // also allow clicking
     this.input.on("pointerdown", () => {
-      this.scene.start("hello-world");
+      this.scene.start("menu");
     });
   }
 
