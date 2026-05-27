@@ -45,6 +45,8 @@ export default class LabyrinthScene2 extends Phaser.Scene {
     // create goal marker
     this.goal = this.physics.add.sprite(this.goalX * 32 + 16, this.goalY * 32 + 16, "goal-tex");
     this.goal.setDisplaySize(20, 20);
+    this.goal.body.setAllowGravity(false);
+    this.goal.setImmovable(true);
 
     // collider between player and walls
     this.physics.add.collider(this.player, this.walls);
@@ -160,8 +162,8 @@ export default class LabyrinthScene2 extends Phaser.Scene {
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     ];
 
-    this.goalX = 22;
-    this.goalY = 10;
+    this.goalX = 4;
+    this.goalY = 1;
 
     this.walls = this.physics.add.staticGroup();
 
@@ -180,21 +182,23 @@ export default class LabyrinthScene2 extends Phaser.Scene {
   spawnItems() {
     // more items in level 2 (10 total)
     const itemPositions = [
-      { x: 2, y: 2 },
-      { x: 6, y: 2 },
-      { x: 10, y: 3 },
-      { x: 14, y: 4 },
-      { x: 18, y: 2 },
-      { x: 22, y: 3 },
-      { x: 8, y: 8 },
-      { x: 12, y: 10 },
-      { x: 16, y: 13 },
-      { x: 20, y: 15 },
+      { x: 2, y: 1 },
+      { x: 6, y: 1 },
+      { x: 10, y: 1 },
+      { x: 14, y: 1 },
+      { x: 18, y: 1 },
+      { x: 22, y: 1 },
+      { x: 4, y: 3 },
+      { x: 8, y: 3 },
+      { x: 12, y: 3 },
+      { x: 17, y: 3 },
     ];
 
     itemPositions.forEach((pos) => {
       const item = this.items.create(pos.x * 32 + 16, pos.y * 32 + 16, "item-tex");
       item.setDisplaySize(20, 20);
+      item.body.setAllowGravity(false);
+      item.setImmovable(true);
       item.setData("collected", false);
     });
   }

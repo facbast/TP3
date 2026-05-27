@@ -45,6 +45,8 @@ export default class LabyrinthScene extends Phaser.Scene {
     // create goal marker
     this.goal = this.physics.add.sprite(this.goalX * 32 + 16, this.goalY * 32 + 16, "goal-tex");
     this.goal.setDisplaySize(20, 20);
+    this.goal.body.setAllowGravity(false);
+    this.goal.setImmovable(true);
 
     // collider between player and walls
     this.physics.add.collider(this.player, this.walls);
@@ -181,21 +183,23 @@ export default class LabyrinthScene extends Phaser.Scene {
   }
 
   spawnItems() {
-    // place items at specific locations (not on walls)
+    // place items at accessible locations in the open corridors
     const itemPositions = [
-      { x: 2, y: 2 },
-      { x: 5, y: 3 },
-      { x: 8, y: 6 },
-      { x: 12, y: 8 },
-      { x: 16, y: 10 },
-      { x: 20, y: 7 },
-      { x: 22, y: 12 },
-      { x: 10, y: 15 },
+      { x: 2, y: 1 },
+      { x: 5, y: 1 },
+      { x: 8, y: 1 },
+      { x: 11, y: 1 },
+      { x: 14, y: 1 },
+      { x: 17, y: 1 },
+      { x: 20, y: 1 },
+      { x: 23, y: 1 },
     ];
 
     itemPositions.forEach((pos) => {
       const item = this.items.create(pos.x * 32 + 16, pos.y * 32 + 16, "item-tex");
       item.setDisplaySize(20, 20);
+      item.body.setAllowGravity(false);
+      item.setImmovable(true);
       item.setData("collected", false);
     });
   }

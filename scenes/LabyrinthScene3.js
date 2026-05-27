@@ -54,6 +54,8 @@ export default class LabyrinthScene3 extends Phaser.Scene {
     // create goal marker
     this.goal = this.physics.add.sprite(this.goalX * 32 + 16, this.goalY * 32 + 16, "goal-tex");
     this.goal.setDisplaySize(20, 20);
+    this.goal.body.setAllowGravity(false);
+    this.goal.setImmovable(true);
 
     // colliders
     this.physics.add.collider(this.player, this.walls);
